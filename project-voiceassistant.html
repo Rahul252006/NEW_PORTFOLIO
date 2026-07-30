@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Voice Assistant & Real-Time AI Conversational System — Case Study</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&family=Fira+Sans:wght@300;400;500;600&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<style>
+/* ─── RESET ─────────────────────────────────────────────── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* ─── PAGE LOADER ────────────────────────────────────────── */
+.page-loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #ffffff;
+  z-index: 99999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.page-loader.fade-out {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.loader-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid rgba(236, 72, 153, 0.1);
+  border-top: 3px solid #ec4899;
+  border-right: 3px solid #8b5cf6;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+html { scroll-behavior: smooth; }
+
+:root {
+  --white: #ffffff;
+  --black: #000000;
+  --gray-100: #f5f5f5;
+  --gray-200: #e8e8e8;
+  --gray-400: #999999;
+  --gray-600: #555555;
+  --gray-800: #222222;
+  --font-display: 'Manrope', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-label: 'Fira Sans', sans-serif;
+  --font-code: 'Fira Code', monospace;
+}
+
+body {
+  background: var(--white);
+  color: var(--black);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  padding-top: 4.2rem;
+}
+
+/* ─── NAV ─────────────────────────────────────────────────── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 4rem;
+  background: rgba(255,255,255,0.65);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.nav-logo {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.1rem;
+  letter-spacing: -0.02em;
+  color: var(--black);
+  text-decoration: none;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2.5rem;
+  list-style: none;
+}
+
+.nav-links a {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--gray-600);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--black); }
+
+/* ─── CASE STUDY HEADER ───────────────────────────────────── */
+.case-header {
+  padding: 2rem 4rem 4rem;
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.back-link {
+  font-family: var(--font-label);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--black);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  transition: opacity 0.2s;
+}
+.back-link:hover { opacity: 0.5; }
+
+.case-num {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gray-400);
+  margin-bottom: 1rem;
+}
+
+.case-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+  color: var(--black);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.ai-badge-glowing {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.25rem 0.75rem;
+  border: none;
+  background: linear-gradient(135deg, #b30059 0%, #3b00c6 100%);
+  border-radius: 5px;
+  vertical-align: middle;
+  margin-left: 0.5rem;
+  margin-right: 0.2rem;
+  position: relative;
+  box-shadow: 0 0 14px rgba(236, 72, 153, 0.45), 0 0 24px rgba(139, 92, 246, 0.3);
+  animation: ai-glow 2s infinite alternate;
+}
+
+.ai-badge-text {
+  font-family: var(--font-label);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ffffff;
+  display: inline-block;
+}
+
+.ai-badge-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 8px #ffffff;
+  animation: ai-dot-pulse 1s infinite alternate;
+}
+
+@keyframes ai-glow {
+  0% { box-shadow: 0 0 10px rgba(236, 72, 153, 0.4), 0 0 20px rgba(139, 92, 246, 0.35); }
+  100% { box-shadow: 0 0 22px rgba(236, 72, 153, 0.7), 0 0 34px rgba(139, 92, 246, 0.6); }
+}
+
+@keyframes ai-dot-pulse {
+  0% { transform: scale(0.85); opacity: 0.7; }
+  100% { transform: scale(1.35); opacity: 1; }
+}
+
+.case-subtitle {
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  font-weight: 300;
+  color: var(--gray-600);
+  max-width: 900px;
+  line-height: 1.8;
+}
+
+.case-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  margin-top: 3rem;
+  border-top: 1px solid var(--gray-200);
+  padding-top: 2rem;
+}
+
+.meta-item-title {
+  font-family: var(--font-label);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gray-400);
+  margin-bottom: 0.5rem;
+}
+
+.meta-item-val {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--black);
+  font-weight: 500;
+}
+
+/* ─── CASE STUDY CONTENT ──────────────────────────────────── */
+.case-content {
+  padding: 5rem 4rem;
+  display: grid;
+  grid-template-columns: 1fr 2.8fr;
+  gap: 5rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.content-left {
+  position: sticky;
+  top: 8rem;
+  height: fit-content;
+}
+
+.content-nav-title {
+  font-family: var(--font-label);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gray-400);
+  margin-bottom: 1.5rem;
+}
+
+.content-nav-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.content-nav-list a {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--gray-600);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.content-nav-list a:hover { color: var(--black); }
+
+.content-right {
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+}
+
+.case-section {
+  scroll-margin-top: 8rem;
+}
+
+.case-section h2 {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--black);
+  letter-spacing: -0.02em;
+  margin-bottom: 1.5rem;
+}
+
+.case-section p {
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  font-weight: 300;
+  color: var(--gray-600);
+  line-height: 1.85;
+  margin-bottom: 1.5rem;
+}
+
+.case-section ul {
+  list-style: none;
+  margin-bottom: 1.5rem;
+}
+
+.case-section li {
+  font-family: var(--font-body);
+  font-size: 0.98rem;
+  font-weight: 300;
+  color: var(--gray-600);
+  line-height: 1.7;
+  padding-left: 1.5rem;
+  position: relative;
+  margin-bottom: 0.8rem;
+}
+.case-section li::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: var(--black);
+}
+
+.accent-quote {
+  border-left: 3px solid var(--black);
+  padding: 1rem 0 1rem 2rem;
+  margin: 2rem 0;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-style: italic;
+  font-weight: 500;
+  color: var(--black);
+  line-height: 1.5;
+  background: var(--gray-100);
+}
+
+.code-block-container {
+  background: #0d1117;
+  color: #c9d1d9;
+  border-radius: 8px;
+  padding: 1.5rem;
+  font-family: var(--font-code);
+  font-size: 0.85rem;
+  overflow-x: auto;
+  line-height: 1.5;
+  margin: 2rem 0;
+  border: 1px solid #30363d;
+}
+
+.code-block-container pre {
+  margin: 0;
+}
+
+.tech-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2rem 0;
+  font-family: var(--font-body);
+}
+
+.tech-table th, .tech-table td {
+  padding: 0.9rem 1.2rem;
+  text-align: left;
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.tech-table th {
+  font-family: var(--font-label);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: var(--gray-100);
+  color: var(--black);
+  font-weight: 700;
+}
+
+.tech-table td {
+  font-size: 0.92rem;
+  color: var(--gray-600);
+}
+
+/* ─── FOOTER ──────────────────────────────────────────────── */
+footer {
+  background: var(--black);
+  border-top: 1px solid #111;
+  padding: 1.5rem 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.footer-copy {
+  font-family: var(--font-label);
+  font-size: 0.72rem;
+  color: #888;
+  letter-spacing: 0.06em;
+}
+
+/* ─── MOBILE ──────────────────────────────────────────────── */
+@media (max-width: 968px) {
+  .case-content { grid-template-columns: 1fr; gap: 3rem; }
+  .content-left { display: none; }
+}
+
+@media (max-width: 768px) {
+  nav { padding: 1rem 1.5rem; }
+  .nav-links { display: none; }
+  .case-header, .case-content, footer { padding-left: 1.5rem; padding-right: 1.5rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- Page Loader -->
+<div class="page-loader" id="page-loader">
+  <div class="loader-spinner"></div>
+</div>
+<script>
+  (function () {
+    function hideLoader() {
+      const loader = document.getElementById('page-loader');
+      if (loader && !loader.classList.contains('fade-out')) {
+        loader.classList.add('fade-out');
+        setTimeout(() => loader.remove(), 300);
+      }
+    }
+    document.addEventListener('DOMContentLoaded', hideLoader);
+    setTimeout(hideLoader, 800);
+    window.addEventListener('load', hideLoader);
+  })();
+</script>
+
+<!-- ─── NAV ─────────────────────────────────────────────── -->
+<nav>
+  <a href="index.html" class="nav-logo">RS.</a>
+  <ul class="nav-links">
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#experience">Work</a></li>
+    <li><a href="index.html#projects">Projects</a></li>
+    <li><a href="certifications.html">Certs</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- ─── CASE STUDY HEADER ────────────────────────────────── -->
+<header class="case-header">
+  <a href="index.html#projects" class="back-link">&larr; Back to Projects</a>
+  <div class="case-num">Case Study 01 — Real-Time Conversational AI</div>
+  <h1 class="case-title">Voice Assistant & Real-Time AI System <span class="ai-badge-glowing"><span class="ai-badge-dot"></span><span class="ai-badge-text">AI / ML PROJECT</span></span></h1>
+  <p class="case-subtitle">A state-of-the-art, modular voice assistant built with React, FastAPI WebSocket Streaming, Groq LPU (`llama-3.3-70b-versatile`), and ElevenLabs Premium Human TTS (`eleven_turbo_v2_5`). Delivers sub-150ms TTFT responses, dynamic voice gender switching, bulletproof anti-overlap audio safeguards, and automated free-tier API fallback routing.</p>
+
+  <div class="case-meta-grid">
+    <div class="meta-item">
+      <div class="meta-item-title">Role</div>
+      <div class="meta-item-val">Sole AI & Full-Stack Architect</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-item-title">Technologies</div>
+      <div class="meta-item-val">React 18, TypeScript, FastAPI, WebSockets, Groq LPU, ElevenLabs, Docker</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-item-title">Primary Models</div>
+      <div class="meta-item-val">Llama-3.3-70b-versatile & Eleven Turbo v2.5</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-item-title">Links</div>
+      <div class="meta-item-val">
+        <a href="https://github.com/Rahul252006" target="_blank" style="color: var(--black); font-weight: 700; text-decoration: underline;">GitHub Repository ↗</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ─── CASE STUDY CONTENT ───────────────────────────────── -->
+<main class="case-content">
+  <aside class="content-left">
+    <div class="content-nav-title">Project Outline</div>
+    <ul class="content-nav-list">
+      <li><a href="#architecture">System Architecture</a></li>
+      <li><a href="#groq-elevenlabs">Groq & ElevenLabs</a></li>
+      <li><a href="#safeguards">Audio Safeguards</a></li>
+      <li><a href="#techstack">Full Tech Stack</a></li>
+      <li><a href="#deployment">Docker & Production</a></li>
+    </ul>
+  </aside>
+
+  <div class="content-right">
+
+    <!-- Section: Architecture -->
+    <section id="architecture" class="case-section">
+      <h2>Core Features & Architecture</h2>
+      <p>
+        The system connects a high-performance React SPA frontend with a Python FastAPI asynchronous backend over native WebSockets (`/ws/conversation`). Token streaming and high-fidelity audio synthesis occur concurrently to achieve ultra-low human conversational latency.
+      </p>
+
+      <div class="code-block-container">
+<pre>
++-------------------------------------------------------------------------+
+|                              FRONTEND (React)                           |
+|  +------------------------+  +-----------------+  +------------------+  |
+|  | Web Speech Recognition |  | Markdown Render |  | HTMLAudio / TTS  |  |
+|  +-----------+------------+  +--------^--------+  +--------^---------+  |
++--------------|------------------------|--------------------|------------+
+               | (Text/Speech Input)    | (Stream Events)    | (MP3 Stream)
+               v                        |                    |
++---------------------------------------+--------------------+------------+
+|                            BACKEND (FastAPI)                            |
+|  +--------------------+      +------------------+     +--------------+  |
+|  | WebSocket Router   +----->| Groq LLM Service |     | TTS Router   |  |
+|  | (/ws/conversation) |      | (AsyncGroq API)  |     | (/api/tts)   |  |
+|  +--------------------+      +--------+---------+     +-------+------+  |
++---------------------------------------|-----------------------|---------+
+                                        |                       |
+                                        v                       v
+                           +----------------------+  +--------------------+
+                           | Groq Cloud Platform  |  | ElevenLabs API     |
+                           | (llama-3.3-70b)      |  | (Turbo v2.5 / MP3) |
+                           +----------------------+  +--------------------+
+</pre>
+      </div>
+
+      <div class="accent-quote">
+        "By pairing Groq's LPU token streaming engine with ElevenLabs Turbo v2.5 human voice generation, the assistant delivers a lifelike conversational experience with time-to-first-token under 150ms."
+      </div>
+    </section>
+
+    <!-- Section: Groq & ElevenLabs -->
+    <section id="groq-elevenlabs" class="case-section">
+      <h2>Groq LPU LLM & ElevenLabs Integration</h2>
+      <p>
+        The conversation lifecycle uses `AsyncGroq` with `stream=True` to stream tokens directly over WebSocket frames (`assistant_started`, `assistant_delta`, `assistant_completed`).
+      </p>
+      <ul>
+        <li><strong>Groq LLM Engine:</strong> Powered by `llama-3.3-70b-versatile` running on dedicated Language Processing Units (LPUs) for instant response initiation.</li>
+        <li><strong>Dynamic Voice Gender Switching:</strong>
+          <ul>
+            <li><strong>Female Voice:</strong> Mapped to `cgSgspJ2msm6clMCkdW9` (Jessica — Warm & Bright Female Voice).</li>
+            <li><strong>Male Voice:</strong> Mapped to `txk8uOzZ0iCh0B9mFSRG` (Rahul S — Indian Conversational Male Voice).</li>
+          </ul>
+        </li>
+        <li><strong>Automated Free-Tier Fallback Handling:</strong> Automatically catches `HTTP 402 Payment Required` exceptions when restricted custom voice IDs are requested on free API tier keys, seamlessly re-routing to `IKne3meq5aSn9XLyUdCD` (Charlie — Deep Male) without throwing runtime errors.</li>
+        <li><strong>Real-Time Preview Voice:</strong> Features an instant UI test button (`🔊 Preview Voice`) to preview voice characteristics before speaking.</li>
+      </ul>
+    </section>
+
+    <!-- Section: Audio Safeguards -->
+    <section id="safeguards" class="case-section">
+      <h2>Safeguards & Reliability Engineering</h2>
+      <p>
+        Real-time audio processing requires strict control over browser execution states to prevent overlap, stuttering, or memory leaks:
+      </p>
+      <ul>
+        <li><strong>Zero-Overlap AbortController:</strong> Instantly cancels ongoing or slow `POST /api/tts` network requests whenever new speech is initiated or manual audio reset is triggered.</li>
+        <li><strong>Instant Audio Reset (`activeAudioRef`):</strong> Pauses active HTML5 `<audio>` elements, detaches media object sources (`URL.revokeObjectURL`), and cancels `window.speechSynthesis` utterances.</li>
+        <li><strong>Turn Deduplication Guard (`lastSpokenTurnRef`):</strong> Time-bounded deduplication guard stopping duplicate `assistant_completed` events from re-triggering audio playback within 2 seconds.</li>
+        <li><strong>Smart Markdown Cleaning:</strong> Regex preprocessing strips code blocks, emojis, bold markers, and stage directions (e.g. `(warm smile)`) so synthesized speech remains natural.</li>
+      </ul>
+    </section>
+
+    <!-- Section: Full Tech Stack -->
+    <section id="techstack" class="case-section">
+      <h2>Full Tech Stack</h2>
+      <table class="tech-table">
+        <thead>
+          <tr>
+            <th>Layer</th>
+            <th>Technology</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Frontend Framework</strong></td>
+            <td>React 18, TypeScript, Vite</td>
+            <td>SPA with modular component architecture and dynamic Ref state hooks.</td>
+          </tr>
+          <tr>
+            <td><strong>Speech Input</strong></td>
+            <td>Web Speech API (SpeechRecognition)</td>
+            <td>Browser-native voice-to-text recognition with visual speech indicator.</td>
+          </tr>
+          <tr>
+            <td><strong>Backend API</strong></td>
+            <td>Python 3.12, FastAPI, Uvicorn</td>
+            <td>Async WebSocket server (`/ws/conversation`) and REST endpoints (`/api/tts`).</td>
+          </tr>
+          <tr>
+            <td><strong>LLM Inference</strong></td>
+            <td>Groq Cloud Platform (`AsyncGroq`)</td>
+            <td>LPU-accelerated `llama-3.3-70b-versatile` multi-lingual reasoning model.</td>
+          </tr>
+          <tr>
+            <td><strong>TTS Provider</strong></td>
+            <td>ElevenLabs REST API (`httpx`)</td>
+            <td>`eleven_turbo_v2_5` human voice streaming with automated fallback.</td>
+          </tr>
+          <tr>
+            <td><strong>Containerization</strong></td>
+            <td>Docker, Docker Compose</td>
+            <td>Multi-stage production container configuration with health checks.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Section: Production & Docker -->
+    <section id="deployment" class="case-section">
+      <h2>Production Deployment Setup</h2>
+      <p>The system is packaged with production manifests for multi-cloud deployment:</p>
+      <ul>
+        <li><strong>Docker Compose:</strong> Single-command local orchestration (`docker compose up --build`) exposing frontend on port 5173 and backend API on port 8000.</li>
+        <li><strong>Railway & Render Setup:</strong> Pre-configured manifests (`railway.json` and `render.yaml`) handling WebSocket CORS headers and environment injection.</li>
+        <li><strong>DigitalOcean & Nginx Reverse Proxy:</strong> Includes Nginx configuration (`voice-assistant.conf`) for proxying WebSocket upgrades (`Upgrade $http_upgrade`).</li>
+      </ul>
+    </section>
+
+  </div>
+</main>
+
+<!-- ─── FOOTER ────────────────────────────────────────────── -->
+<footer>
+  <span class="footer-copy">© 2026 Rahul Simhadri</span>
+  <span class="footer-copy">VIT Vellore · Information Technology & Real-Time AI Systems</span>
+</footer>
+
+</body>
+</html>

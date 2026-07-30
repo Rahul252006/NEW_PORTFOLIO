@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Achievements — Rahul Simhadri</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&family=Fira+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        /* ─── PAGE LOADER ────────────────────────────────────────── */
+        .page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #ffffff;
+            z-index: 99999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .page-loader.fade-out {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .loader-spinner {
+            width: 36px;
+            height: 36px;
+            border: 3px solid rgba(236, 72, 153, 0.1);
+            border-top: 3px solid #ec4899;
+            border-right: 3px solid #8b5cf6;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 2rem;
+            margin-bottom: 5rem;
+        }
+
+        .stat-card {
+            border: 1px solid var(--gray-200);
+            padding: 2rem;
+            background: var(--white);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--black);
+            margin-bottom: 0.5rem;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-family: var(--font-label);
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--gray-400);
+        }
+
+        .achieve-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .achieve-item {
+            border-bottom: 1px solid var(--gray-200);
+            padding-bottom: 2rem;
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 4rem;
+            align-items: start;
+        }
+        .achieve-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .achieve-meta {
+            font-family: var(--font-label);
+            font-size: 0.85rem;
+            color: var(--gray-400);
+            line-height: 1.6;
+        }
+
+        .achieve-type {
+            font-weight: 600;
+            color: var(--black);
+        }
+
+        .achieve-date {
+            font-size: 0.78rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-top: 0.5rem;
+        }
+
+        .achieve-title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.35rem;
+            color: var(--black);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.01em;
+        }
+
+        .achieve-desc {
+            font-family: var(--font-body);
+            font-size: 0.98rem;
+            color: var(--gray-600);
+            font-weight: 300;
+            line-height: 1.7;
+        }
+
+        @media (max-width: 768px) {
+            .achieve-item { grid-template-columns: 1fr; gap: 1rem; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Page Loader -->
+    <div class="page-loader" id="page-loader">
+        <div class="loader-spinner"></div>
+    </div>
+    <script>
+        (function () {
+            function hideLoader() {
+                const loader = document.getElementById('page-loader');
+                if (loader && !loader.classList.contains('fade-out')) {
+                    loader.classList.add('fade-out');
+                    setTimeout(() => loader.remove(), 300);
+                }
+            }
+            document.addEventListener('DOMContentLoaded', hideLoader);
+            setTimeout(hideLoader, 800);
+            window.addEventListener('load', hideLoader);
+        })();
+    </script>
+
+    <!-- ─── NAV ─────────────────────────────────────────────── -->
+    <nav>
+        <a href="index.html" class="nav-logo">RS.</a>
+        <ul class="nav-links">
+            <li><a href="about.html">About</a></li>
+            <li><a href="projects.html">Projects</a></li>
+            <li><a href="experience.html">Experience</a></li>
+            <li><a href="skills.html">Skills</a></li>
+            <li><a href="achievements.html" class="active">Achievements</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="index.html#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- ─── PAGE HEADER ─────────────────────────────────────── -->
+    <section style="padding-bottom: 2rem; border-bottom: 1px solid var(--gray-200);">
+        <a href="index.html" class="back-btn">&larr; Back to Home</a>
+        <div class="section-label">Achievements</div>
+        <h1 class="section-title" style="margin-bottom: 0;">Badges, Credentials & Stats</h1>
+    </section>
+
+    <!-- ─── ACHIEVEMENTS CONTENT ────────────────────────────── -->
+    <main class="section-container">
+        
+        <!-- Stats Row -->
+        <div class="stats-grid reveal">
+            <div class="stat-card">
+                <div class="stat-value">250+</div>
+                <div class="stat-label">LeetCode Solved</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">Top 15%</div>
+                <div class="stat-label">LeetCode Contest</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">400+</div>
+                <div class="stat-label">GitHub Commits</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">7+</div>
+                <div class="stat-label">AI / Cloud Badges</div>
+            </div>
+        </div>
+
+        <h2 style="font-family: var(--font-display); font-size: 1.8rem; font-weight: 700; color: var(--black); margin-bottom: 3rem;">Selected Credentials & Competitions</h2>
+
+        <div class="achieve-list">
+            
+            <!-- Item 1: Microsoft AI -->
+            <div class="achieve-item reveal">
+                <div class="achieve-meta">
+                    <span class="achieve-type">AI & Cloud Engineering</span>
+                    <div class="achieve-date">May 2026</div>
+                </div>
+                <div>
+                    <h3 class="achieve-title">Microsoft Certified: Azure AI Apps and Agents Developer Associate</h3>
+                    <p class="achieve-desc">
+                        Completed advanced training and verified credentials on deploying Azure OpenAI models, configuring cognitive search vector indexes, orchestrating multi-agent workflows, and building conversational AI interfaces using Azure AI Foundry.
+                    </p>
+                    <a href="https://learn.microsoft.com/en-gb/users/rahulsimhadri-8503/credentials/9c810e036632dae1?ref=https%3A%2F%2Fwww.linkedin.com%2F" target="_blank" class="proj-link" style="margin-top: 0.6rem; display: inline-block;">View Certificate &rarr;</a>
+                </div>
+            </div>
+
+            <!-- Item 2: Oracle GenAI -->
+            <div class="achieve-item reveal">
+                <div class="achieve-meta">
+                    <span class="achieve-type">Generative AI professional</span>
+                    <div class="achieve-date">April 2026</div>
+                </div>
+                <div>
+                    <h3 class="achieve-title">Oracle Cloud Infrastructure Generative AI Professional</h3>
+                    <p class="achieve-desc">
+                        Demonstrates competency in fine-tuning Large Language Models (LLMs) like Cohere and Llama, orchestrating vector databases, deploying dedicated AI clusters, and designing enterprise-grade RAG pipelines.
+                    </p>
+                    <a href="https://catalog-education.oracle.com/ords/certview/sharebadge?id=51A44E378EAC57FA61B55312A6FED4F50C820E6FA3C61D74D54C77B3E683B509" target="_blank" class="proj-link" style="margin-top: 0.6rem; display: inline-block;">View Certificate &rarr;</a>
+                </div>
+            </div>
+
+            <!-- Item 3: Goldman Sachs -->
+            <div class="achieve-item reveal">
+                <div class="achieve-meta">
+                    <span class="achieve-type">Operations Engineering</span>
+                    <div class="achieve-date">2026</div>
+                </div>
+                <div>
+                    <h3 class="achieve-title">Goldman Sachs Operations Job Simulation</h3>
+                    <p class="achieve-desc">
+                        Completed practical simulation task modules in operations engineering, data management, and operational workflow optimization hosted by Goldman Sachs on Forage.
+                    </p>
+                    <a href="https://www.theforage.com/completion-certificates/MBA4MnZTNFEoJZGnk/wNge9cjzNTXD2acrv_MBA4MnZTNFEoJZGnk_69cd59f580dfbcff228aa3c4_1775117588971_completion_certificate.pdf" target="_blank" class="proj-link" style="margin-top: 0.6rem; display: inline-block;">View Certificate &rarr;</a>
+                </div>
+            </div>
+
+            <!-- Item 4: HackerRank SQL Intermediate -->
+            <div class="achieve-item reveal">
+                <div class="achieve-meta">
+                    <span class="achieve-type">Database Certification</span>
+                    <div class="achieve-date">2026</div>
+                </div>
+                <div>
+                    <h3 class="achieve-title">HackerRank SQL (Intermediate)</h3>
+                    <p class="achieve-desc">
+                        Verified competency in complex SQL queries, relational joins, subqueries, database indexing, and data aggregation on HackerRank.
+                    </p>
+                    <a href="https://www.hackerrank.com/certificates/ca3b94683d32" target="_blank" class="proj-link" style="margin-top: 0.6rem; display: inline-block;">View Certificate &rarr;</a>
+                </div>
+            </div>
+
+            <!-- Item 5: Google Gemini QuizOff -->
+            <div class="achieve-item reveal">
+                <div class="achieve-meta">
+                    <span class="achieve-type">Competitions</span>
+                    <div class="achieve-date">June 2026</div>
+                </div>
+                <div>
+                    <h3 class="achieve-title">Google Gemini QuizOff 2026</h3>
+                    <p class="achieve-desc">
+                        Tested developer skills and engineering capabilities in real-time prompt optimization, multi-turn LLM pipelines, and context retrieval using Gemini API models.
+                    </p>
+                    <a href="https://unstop.com/certificate-preview/f907a15e-49de-41fa-8b84-b1eb6adaef85" target="_blank" class="proj-link" style="margin-top: 0.6rem; display: inline-block;">View Certificate &rarr;</a>
+                </div>
+            </div>
+
+            <!-- Item 6: Samsung AI Treasure Hunt -->
+            <div class="achieve-item reveal">
+                <div class="achieve-meta">
+                    <span class="achieve-type">Competitions</span>
+                    <div class="achieve-date">2026</div>
+                </div>
+                <div>
+                    <h3 class="achieve-title">Samsung Galaxy AI Treasure Hunt 2026</h3>
+                    <p class="achieve-desc">
+                        Competed in logic-based algorithmic challenges using Galaxy AI's cognitive search capabilities and contextual language models.
+                    </p>
+                    <a href="https://unstop.com/certificate-preview/9d3c58d0-61a9-41ae-9af9-38a8fc128b13" target="_blank" class="proj-link" style="margin-top: 0.6rem; display: inline-block;">View Certificate &rarr;</a>
+                </div>
+            </div>
+
+            <!-- Item 7: GDG Coimbatore -->
+            <div class="achieve-item reveal">
+                <div class="achieve-meta">
+                    <span class="achieve-type">Hackathons</span>
+                    <div class="achieve-date">2026</div>
+                </div>
+                <div>
+                    <h3 class="achieve-title">Tech For Good 2026 — Build With Agents (GDG Coimbatore)</h3>
+                    <p class="achieve-desc">
+                        Participated in building agentic AI applications designed for social impact during GDG Coimbatore's Tech For Good hackathon 2026.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Item 8: OpenAI Buildathon -->
+            <div class="achieve-item reveal">
+                <div class="achieve-meta">
+                    <span class="achieve-type">Hackathons</span>
+                    <div class="achieve-date">March 2026</div>
+                </div>
+                <div>
+                    <h3 class="achieve-title">OpenAI &times; NxtWave GenAI Buildathon (Top 5% Project)</h3>
+                    <p class="achieve-desc">
+                        Coordinated a student team during a 48-hour build sprint. Structured automated prompt routers that query local knowledge indexes to generate interactive response files.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- ─── FOOTER ──────────────────────────────────────────── -->
+    <footer>
+        <span class="footer-copy">© 2026 Rahul Simhadri</span>
+        <span class="footer-copy">VIT Vellore · AI/ML Engineering</span>
+    </footer>
+
+    <!-- ─── SCRIPTS ─────────────────────────────────────────── -->
+    <script>
+        (function () {
+            var els = document.querySelectorAll('.reveal');
+            if (!els.length) return;
+
+            var observer = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+            els.forEach(function (el) { observer.observe(el); });
+        })();
+    </script>
+</body>
+
+</html>

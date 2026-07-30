@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Certifications — Rahul Simhadri</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&family=Fira+Sans:wght@300;400;500;600&display=swap"
+    rel="stylesheet" />
+
+  <style>
+    /* ─── RESET ─────────────────────────────────────────────── */
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* ─── PAGE LOADER ────────────────────────────────────────── */
+    .page-loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #ffffff;
+      z-index: 99999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .page-loader.fade-out {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .loader-spinner {
+      width: 36px;
+      height: 36px;
+      border: 3px solid rgba(236, 72, 153, 0.1);
+      border-top: 3px solid #ec4899;
+      border-right: 3px solid #8b5cf6;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    :root {
+      --white: #ffffff;
+      --black: #000000;
+      --gray-100: #f5f5f5;
+      --gray-200: #e8e8e8;
+      --gray-400: #999999;
+      --gray-600: #555555;
+      --gray-800: #222222;
+      --font-display: 'Manrope', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-label: 'Fira Sans', sans-serif;
+    }
+
+    body {
+      background: var(--white);
+      color: var(--black);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      padding-top: 4.2rem;
+      /* Space for fixed nav */
+    }
+
+    /* ─── NAV ─────────────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 4rem;
+      background: rgba(255, 255, 255, 0.65);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .nav-logo {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 1.1rem;
+      letter-spacing: -0.02em;
+      color: var(--black);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      font-weight: 500;
+      letter-spacing: normal;
+      text-transform: none;
+      color: var(--gray-600);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--black);
+    }
+
+    /* ─── PAGE HEADER ─────────────────────────────────────────── */
+    .page-header {
+      padding: 2rem 4rem 3rem;
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .back-home {
+      font-family: var(--font-label);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--black);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      transition: opacity 0.2s;
+    }
+
+    .back-home:hover {
+      opacity: 0.5;
+    }
+
+    .page-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1.1;
+      color: var(--black);
+    }
+
+    .page-subtitle {
+      font-family: var(--font-body);
+      font-size: 1.1rem;
+      font-weight: 300;
+      color: var(--gray-600);
+      max-width: 600px;
+      margin-top: 1rem;
+    }
+
+    /* ─── CERTIFICATIONS LISTING ─────────────────────────────── */
+    .certs-container {
+      padding: 4rem 4rem 8rem;
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+    }
+
+    .cert-detail-card {
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: 12px;
+      padding: 2.5rem;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+
+
+    .cert-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--gray-100);
+      padding-bottom: 1.5rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .cert-header-left {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .logo-container {
+      width: 54px;
+      height: 54px;
+      min-width: 54px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--gray-200);
+      background: var(--white);
+      padding: 0.3rem;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+    }
+
+    .brand-logo {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    .cert-title-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    .cert-title-group h3 {
+      font-family: var(--font-display);
+      font-size: 1.35rem;
+      font-weight: 800;
+      line-height: 1.3;
+      letter-spacing: -0.02em;
+      color: var(--black);
+    }
+
+    .cert-issuer-name {
+      font-family: var(--font-label);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--gray-400);
+    }
+
+    .cert-header-right {
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      background-color: rgb(0, 154, 13);
+      color: rgb(255, 255, 255);
+      font-weight: 500;
+      padding: 0.4rem 1rem;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .cert-details-block {
+      padding-left: 4.8rem;
+      /* Aligns description text with the title group */
+    }
+
+    .cert-body-text {
+      font-family: var(--font-body);
+      font-size: 0.92rem;
+      font-weight: 300;
+      color: var(--gray-600);
+      line-height: 1.8;
+      margin-bottom: 1.5rem;
+      max-width: 850px;
+    }
+
+    .skills-covered {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 2rem;
+    }
+
+    .skill-badge {
+      font-family: var(--font-label);
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: var(--gray-600);
+      background: var(--gray-100);
+      padding: 0.25rem 0.65rem;
+      border-radius: 4px;
+    }
+
+    .view-cert-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-label);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--white);
+      background: var(--black);
+      padding: 0.7rem 1.4rem;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: all 0.2s ease-in-out;
+      border: 1px solid var(--black);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .view-cert-btn:hover {
+      background: transparent;
+      color: var(--black);
+      box-shadow: none;
+    }
+
+    /* ─── CONTACT CALLOUT ─────────────────────────────────────── */
+    .contact-callout {
+      background: var(--black);
+      color: var(--white);
+      padding: 6rem 4rem;
+      text-align: center;
+      border-top: 1px solid var(--gray-200);
+    }
+
+    .callout-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.5rem;
+    }
+
+    .callout-btn {
+      display: inline-block;
+      font-family: var(--font-label);
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--black);
+      background: var(--white);
+      padding: 1rem 2rem;
+      text-decoration: none;
+      margin-top: 1.5rem;
+      transition: opacity 0.2s;
+    }
+
+    .callout-btn:hover {
+      opacity: 0.8;
+    }
+
+    /* ─── FOOTER ──────────────────────────────────────────────── */
+    footer {
+      background: var(--black);
+      border-top: 1px solid #111;
+      padding: 1.5rem 4rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-copy {
+      font-family: var(--font-label);
+      font-size: 0.72rem;
+      color: #444;
+      letter-spacing: 0.06em;
+    }
+
+    /* ─── SCROLL REVEALS ──────────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-delay-1 {
+      transition-delay: 0.1s;
+    }
+
+    .reveal-delay-2 {
+      transition-delay: 0.2s;
+    }
+
+    /* ─── MOBILE ──────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      nav {
+        padding: 1rem 1.5rem;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .page-header,
+      .certs-container,
+      footer {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+      }
+
+      .cert-detail-card {
+        padding: 1.8rem;
+      }
+
+      .cert-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+
+      .cert-details-block {
+        padding-left: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Page Loader -->
+  <div class="page-loader" id="page-loader">
+    <div class="loader-spinner"></div>
+  </div>
+  <script>
+    (function () {
+      function hideLoader() {
+        const loader = document.getElementById('page-loader');
+        if (loader && !loader.classList.contains('fade-out')) {
+          loader.classList.add('fade-out');
+          setTimeout(() => loader.remove(), 300);
+        }
+      }
+      document.addEventListener('DOMContentLoaded', hideLoader);
+      setTimeout(hideLoader, 800);
+      window.addEventListener('load', hideLoader);
+    })();
+  </script>
+
+  <!-- ─── NAV ─────────────────────────────────────────────── -->
+  <nav>
+    <a href="index.html" class="nav-logo">RS.</a>
+    <ul class="nav-links">
+      <li><a href="index.html#about">About</a></li>
+      <li><a href="index.html#experience">Work</a></li>
+      <li><a href="index.html#projects">Projects</a></li>
+      <li><a href="certifications.html">Certs</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- ─── PAGE HEADER ─────────────────────────────────────── -->
+  <header class="page-header">
+    <a href="index.html" class="back-home">&larr; Back to Portfolio</a>
+    <h1 class="page-title">Certifications & Credentials</h1>
+    <p class="page-subtitle">Demonstrated mastery of technical concepts, database operations, and emerging AI
+      technologies verified by industry leaders.</p>
+  </header>
+
+  <!-- ─── CERTIFICATIONS LISTING ──────────────────────────── -->
+  <main class="certs-container">
+
+    <!-- Certification 1: Microsoft -->
+    <div class="cert-detail-card reveal">
+      <div class="cert-card-header">
+        <div class="cert-header-left">
+          <div class="logo-container">
+            <img src="https://img.logo.dev/microsoft.com?token=pk_QN4enQ1iT3Kw0CmgPXmflQ" class="brand-logo"
+              alt="Microsoft" />
+          </div>
+          <div class="cert-title-group">
+            <span class="cert-issuer-name">Microsoft</span>
+            <h3>Microsoft Certified: Azure AI Apps and Agents Developer Associate</h3>
+          </div>
+        </div>
+        <div class="cert-header-right">
+          ✓ Verified Credential
+        </div>
+      </div>
+
+      <div class="cert-details-block">
+        <p class="cert-body-text">
+          Validates expertise in designing and implementing Microsoft Azure AI solutions. Covers deploying Azure OpenAI
+          models, engineering prompt templates, configuring cognitive search vector indexes for Retrieval-Augmented
+          Generation (RAG), and building multi-agent AI ecosystems on Azure.
+        </p>
+        <div class="skills-covered">
+          <span class="skill-badge">Azure OpenAI</span>
+          <span class="skill-badge">Cognitive Search</span>
+          <span class="skill-badge">Agentic AI</span>
+          <span class="skill-badge">Prompt Engineering</span>
+          <span class="skill-badge">RAG Architectures</span>
+        </div>
+        <a href="https://learn.microsoft.com/en-gb/users/rahulsimhadri-8503/credentials/9c810e036632dae1?ref=https%3A%2F%2Fwww.linkedin.com%2F" target="_blank"
+          class="view-cert-btn">
+          View Certificate &nbsp;&rarr;
+        </a>
+      </div>
+    </div>
+
+    <!-- Certification 2: Oracle -->
+    <div class="cert-detail-card reveal reveal-delay-1">
+      <div class="cert-card-header">
+        <div class="cert-header-left">
+          <div class="logo-container">
+            <img src="https://www.vectorlogo.zone/logos/oracle/oracle-ar21.svg" class="brand-logo" alt="Oracle" />
+          </div>
+          <div class="cert-title-group">
+            <span class="cert-issuer-name">Oracle</span>
+            <h3>Oracle Cloud Infrastructure Generative AI Professional</h3>
+          </div>
+        </div>
+        <div class="cert-header-right">
+          ✓ Verified Credential
+        </div>
+      </div>
+
+      <div class="cert-details-block">
+        <p class="cert-body-text">
+          Demonstrates advanced proficiency in designing and deploying Generative AI models on Oracle Cloud
+          Infrastructure (OCI). Covers fine-tuning large language models (LLMs) like Cohere and Llama, orchestrating
+          vector databases, setting up dedicated AI clusters, and embedding generative interfaces in enterprise
+          software.
+        </p>
+        <div class="skills-covered">
+          <span class="skill-badge">Generative AI</span>
+          <span class="skill-badge">LLM Fine-Tuning</span>
+          <span class="skill-badge">OCI Clusters</span>
+          <span class="skill-badge">Vector Databases</span>
+          <span class="skill-badge">Cohere & Llama</span>
+        </div>
+        <a href="https://catalog-education.oracle.com/ords/certview/sharebadge?id=51A44E378EAC57FA61B55312A6FED4F50C820E6FA3C61D74D54C77B3E683B509"
+          target="_blank" class="view-cert-btn">
+          View Certificate &nbsp;&rarr;
+        </a>
+      </div>
+    </div>
+
+    <!-- Certification 3: Goldman Sachs -->
+    <div class="cert-detail-card reveal reveal-delay-2">
+      <div class="cert-card-header">
+        <div class="cert-header-left">
+          <div class="logo-container">
+            <img src="https://img.logo.dev/goldmansachs.com?token=pk_QN4enQ1iT3Kw0CmgPXmflQ" class="brand-logo"
+              alt="Goldman Sachs" />
+          </div>
+          <div class="cert-title-group">
+            <span class="cert-issuer-name">Goldman Sachs</span>
+            <h3>Goldman Sachs Operations Job Simulation</h3>
+          </div>
+        </div>
+        <div class="cert-header-right">
+          ✓ Verified Credential
+        </div>
+      </div>
+
+      <div class="cert-details-block">
+        <p class="cert-body-text">
+          Completed practical simulation task modules in operations engineering, data management, and operational workflow optimization hosted by Goldman Sachs on Forage.
+        </p>
+        <div class="skills-covered">
+          <span class="skill-badge">Operations Engineering</span>
+          <span class="skill-badge">Data Management</span>
+          <span class="skill-badge">Workflow Optimization</span>
+          <span class="skill-badge">Risk Analysis</span>
+        </div>
+        <a href="https://www.theforage.com/completion-certificates/MBA4MnZTNFEoJZGnk/wNge9cjzNTXD2acrv_MBA4MnZTNFEoJZGnk_69cd59f580dfbcff228aa3c4_1775117588971_completion_certificate.pdf" target="_blank" class="view-cert-btn">
+          View Certificate &nbsp;&rarr;
+        </a>
+      </div>
+    </div>
+
+    <!-- Certification 4: HackerRank -->
+    <div class="cert-detail-card reveal reveal-delay-3">
+      <div class="cert-card-header">
+        <div class="cert-header-left">
+          <div class="logo-container">
+            <img src="https://img.logo.dev/hackerrank.com?token=pk_QN4enQ1iT3Kw0CmgPXmflQ" class="brand-logo"
+              alt="HackerRank" />
+          </div>
+          <div class="cert-title-group">
+            <span class="cert-issuer-name">HackerRank</span>
+            <h3>SQL (Intermediate)</h3>
+          </div>
+        </div>
+        <div class="cert-header-right">
+          ✓ Verified Credential
+        </div>
+      </div>
+
+      <div class="cert-details-block">
+        <p class="cert-body-text">
+          Demonstrates advanced skills in querying relational databases, executing complex multi-table joins, writing nested subqueries, and optimizing indexing and data aggregations.
+        </p>
+        <div class="skills-covered">
+          <span class="skill-badge">SQL</span>
+          <span class="skill-badge">Relational Databases</span>
+          <span class="skill-badge">Complex Joins</span>
+          <span class="skill-badge">Subqueries</span>
+          <span class="skill-badge">Data Aggregation</span>
+        </div>
+        <a href="https://www.hackerrank.com/certificates/ca3b94683d32" target="_blank" class="view-cert-btn">
+          View Certificate &nbsp;&rarr;
+        </a>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ─── CONTACT CALLOUT ─────────────────────────────────── -->
+  <section class="contact-callout">
+    <h2 class="callout-title">Let's build something together.</h2>
+    <p>I'm always looking for opportunities to deploy backend APIs, build responsive UIs, or work with AI systems.</p>
+    <a href="index.html#contact" class="callout-btn">Get in touch</a>
+  </section>
+
+  <!-- ─── FOOTER ────────────────────────────────────────────── -->
+  <footer>
+    <span class="footer-copy">© 2026 Rahul Simhadri</span>
+    <span class="footer-copy">VIT Vellore &middot; Information Technology</span>
+  </footer>
+
+  <script>
+    (function () {
+      var els = document.querySelectorAll('.reveal');
+      if (!els.length) return;
+
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+      els.forEach(function (el) { observer.observe(el); });
+    })();
+  </script>
+</body>
+
+</html>

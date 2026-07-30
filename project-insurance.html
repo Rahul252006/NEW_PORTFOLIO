@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Medical Insurance Cost Prediction — Machine Learning Case Study</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&family=Fira+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+<style>
+/* ─── RESET ─────────────────────────────────────────────── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* ─── PAGE LOADER ────────────────────────────────────────── */
+.page-loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #ffffff;
+  z-index: 99999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.page-loader.fade-out {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.loader-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid rgba(236, 72, 153, 0.1);
+  border-top: 3px solid #ec4899;
+  border-right: 3px solid #8b5cf6;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+html { scroll-behavior: smooth; }
+
+:root {
+  --white: #ffffff;
+  --black: #000000;
+  --gray-100: #f5f5f5;
+  --gray-200: #e8e8e8;
+  --gray-400: #999999;
+  --gray-600: #555555;
+  --gray-800: #222222;
+  --font-display: 'Manrope', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-label: 'Fira Sans', sans-serif;
+}
+
+body {
+  background: var(--white);
+  color: var(--black);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  padding-top: 4.2rem;
+}
+
+/* ─── NAV ─────────────────────────────────────────────────── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 4rem;
+  background: rgba(255,255,255,0.65);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.nav-logo {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.1rem;
+  letter-spacing: -0.02em;
+  color: var(--black);
+  text-decoration: none;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2.5rem;
+  list-style: none;
+}
+
+.nav-links a {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--gray-600);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--black); }
+
+/* ─── CASE STUDY HEADER ───────────────────────────────────── */
+.case-header {
+  padding: 2rem 4rem 4rem;
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.back-link {
+  font-family: var(--font-label);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--black);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  transition: opacity 0.2s;
+}
+.back-link:hover { opacity: 0.5; }
+
+.case-num {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gray-400);
+  margin-bottom: 1rem;
+}
+
+.case-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+  color: var(--black);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.ai-badge-glowing {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.25rem 0.75rem;
+  border: none;
+  background: linear-gradient(135deg, #b30059 0%, #3b00c6 100%);
+  border-radius: 5px;
+  vertical-align: middle;
+  margin-left: 0.5rem;
+  margin-right: 0.2rem;
+  position: relative;
+  box-shadow: 0 0 14px rgba(236, 72, 153, 0.45), 0 0 24px rgba(139, 92, 246, 0.3);
+  animation: ai-glow 2s infinite alternate;
+}
+
+.ai-badge-text {
+  font-family: var(--font-label);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ffffff;
+  display: inline-block;
+}
+
+.ai-badge-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 8px #ffffff;
+  animation: ai-dot-pulse 1s infinite alternate;
+}
+
+@keyframes ai-glow {
+  0% { box-shadow: 0 0 10px rgba(236, 72, 153, 0.4), 0 0 20px rgba(139, 92, 246, 0.35); }
+  100% { box-shadow: 0 0 22px rgba(236, 72, 153, 0.7), 0 0 34px rgba(139, 92, 246, 0.6); }
+}
+
+@keyframes ai-dot-pulse {
+  0% { transform: scale(0.85); opacity: 0.7; }
+  100% { transform: scale(1.35); opacity: 1; }
+}
+
+.case-subtitle {
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  font-weight: 300;
+  color: var(--gray-600);
+  max-width: 900px;
+  line-height: 1.8;
+}
+
+.case-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  margin-top: 3rem;
+  border-top: 1px solid var(--gray-200);
+  padding-top: 2rem;
+}
+
+.meta-item-title {
+  font-family: var(--font-label);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gray-400);
+  margin-bottom: 0.5rem;
+}
+
+.meta-item-val {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--black);
+  font-weight: 500;
+}
+
+/* ─── CASE STUDY CONTENT ──────────────────────────────────── */
+.case-content {
+  padding: 5rem 4rem;
+  display: grid;
+  grid-template-columns: 1fr 2.8fr;
+  gap: 5rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.content-left {
+  position: sticky;
+  top: 8rem;
+  height: fit-content;
+}
+
+.content-nav-title {
+  font-family: var(--font-label);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gray-400);
+  margin-bottom: 1.5rem;
+}
+
+.content-nav-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.content-nav-list a {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--gray-600);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.content-nav-list a:hover { color: var(--black); }
+
+.content-right {
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+}
+
+.case-section {
+  scroll-margin-top: 8rem;
+}
+
+.case-section h2 {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--black);
+  letter-spacing: -0.02em;
+  margin-bottom: 1.5rem;
+}
+
+.case-section p {
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  font-weight: 300;
+  color: var(--gray-600);
+  line-height: 1.85;
+  margin-bottom: 1.5rem;
+}
+
+.case-section ul {
+  list-style: none;
+  margin-bottom: 1.5rem;
+}
+
+.case-section li {
+  font-family: var(--font-body);
+  font-size: 0.98rem;
+  font-weight: 300;
+  color: var(--gray-600);
+  line-height: 1.7;
+  padding-left: 1.5rem;
+  position: relative;
+  margin-bottom: 0.8rem;
+}
+.case-section li::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: var(--black);
+}
+
+.accent-quote {
+  border-left: 3px solid var(--black);
+  padding: 1rem 0 1rem 2rem;
+  margin: 2rem 0;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-style: italic;
+  font-weight: 500;
+  color: var(--black);
+  line-height: 1.5;
+  background: var(--gray-100);
+}
+
+/* Data Analyst Tables & Cards */
+.metrics-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2rem 0;
+  font-family: var(--font-body);
+}
+
+.metrics-table th, .metrics-table td {
+  padding: 0.9rem 1.2rem;
+  text-align: left;
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.metrics-table th {
+  font-family: var(--font-label);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: var(--gray-100);
+  color: var(--black);
+  font-weight: 700;
+}
+
+.metrics-table td {
+  font-size: 0.92rem;
+  color: var(--gray-600);
+}
+
+.metrics-table tr.highlight-row {
+  background: rgba(234, 67, 53, 0.05);
+  font-weight: 600;
+}
+
+.metrics-table tr.highlight-row td {
+  color: var(--black);
+}
+
+.workflow-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.2rem;
+  margin: 2rem 0;
+}
+
+.workflow-card {
+  border: 1px solid var(--gray-200);
+  padding: 1.5rem;
+  background: var(--white);
+}
+
+.workflow-phase {
+  font-family: var(--font-label);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--gray-400);
+  margin-bottom: 0.4rem;
+}
+
+.workflow-title {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--black);
+  margin-bottom: 0.6rem;
+}
+
+.workflow-desc {
+  font-size: 0.88rem;
+  color: var(--gray-600);
+  line-height: 1.6;
+}
+
+/* ─── FOOTER ──────────────────────────────────────────────── */
+footer {
+  background: var(--black);
+  border-top: 1px solid #111;
+  padding: 1.5rem 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.footer-copy {
+  font-family: var(--font-label);
+  font-size: 0.72rem;
+  color: #888;
+  letter-spacing: 0.06em;
+}
+
+/* ─── MOBILE ──────────────────────────────────────────────── */
+@media (max-width: 968px) {
+  .case-content { grid-template-columns: 1fr; gap: 3rem; }
+  .content-left { display: none; }
+}
+
+@media (max-width: 768px) {
+  nav { padding: 1rem 1.5rem; }
+  .nav-links { display: none; }
+  .case-header, .case-content, footer { padding-left: 1.5rem; padding-right: 1.5rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- Page Loader -->
+<div class="page-loader" id="page-loader">
+  <div class="loader-spinner"></div>
+</div>
+<script>
+  (function () {
+    function hideLoader() {
+      const loader = document.getElementById('page-loader');
+      if (loader && !loader.classList.contains('fade-out')) {
+        loader.classList.add('fade-out');
+        setTimeout(() => loader.remove(), 300);
+      }
+    }
+    document.addEventListener('DOMContentLoaded', hideLoader);
+    setTimeout(hideLoader, 800);
+    window.addEventListener('load', hideLoader);
+  })();
+</script>
+
+<!-- ─── NAV ─────────────────────────────────────────────── -->
+<nav>
+  <a href="index.html" class="nav-logo">RS.</a>
+  <ul class="nav-links">
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#experience">Work</a></li>
+    <li><a href="index.html#projects">Projects</a></li>
+    <li><a href="certifications.html">Certs</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- ─── CASE STUDY HEADER ────────────────────────────────── -->
+<header class="case-header">
+  <a href="index.html#projects" class="back-link">&larr; Back to Projects</a>
+  <div class="case-num">Case Study 04 — Predictive Data Analytics</div>
+  <h1 class="case-title">Medical Insurance Cost Prediction <span class="ai-badge-glowing"><span class="ai-badge-dot"></span><span class="ai-badge-text">ML PROJECT</span></span></h1>
+  <p class="case-subtitle">An end-to-end Machine Learning web application predicting annual medical insurance charges using demographic and health attributes. Features full Exploratory Data Analysis (EDA), VIF multicollinearity audits, 4-way regression benchmarking, GridSearchCV hyperparameter tuning, and real-time Streamlit cloud deployment on Render.</p>
+
+  <div class="case-meta-grid">
+    <div class="meta-item">
+      <div class="meta-item-title">Role</div>
+      <div class="meta-item-val">Data Analyst & ML Developer</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-item-title">Technologies</div>
+      <div class="meta-item-val">Python, Scikit-learn, Lasso Regression, Pandas, NumPy, Streamlit, Render</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-item-title">Selected Model</div>
+      <div class="meta-item-val">Lasso Regression (Tuned via GridSearchCV)</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-item-title">Links</div>
+      <div class="meta-item-val">
+        <a href="https://medical-insurance-cost-prediction-t798.onrender.com/" target="_blank" style="color: var(--black); font-weight: 700; text-decoration: underline; margin-right: 1rem;">Live Demo ↗</a>
+        <a href="https://github.com/Rahul252006/Medical-Insurance-Cost-Prediction" target="_blank" style="color: var(--black); text-decoration: underline;">GitHub Repository ↗</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ─── CASE STUDY CONTENT ───────────────────────────────── -->
+<main class="case-content">
+  <aside class="content-left">
+    <div class="content-nav-title">Project Outline</div>
+    <ul class="content-nav-list">
+      <li><a href="#overview">Executive Summary</a></li>
+      <li><a href="#dataset">Dataset Architecture</a></li>
+      <li><a href="#eda">Data Analysis & Insights</a></li>
+      <li><a href="#workflow">18-Phase ML Workflow</a></li>
+      <li><a href="#benchmark">Model Benchmarks</a></li>
+      <li><a href="#deployment">Streamlit & Render Deployment</a></li>
+    </ul>
+  </aside>
+
+  <div class="content-right">
+
+    <!-- Section: Executive Summary -->
+    <section id="overview" class="case-section">
+      <h2>Executive Summary</h2>
+      <p>
+        In the health insurance domain, accurately estimating annual policy charges based on individual customer profiles is vital for actuarial underwriting, pricing accuracy, and risk mitigation. Traditional manual rule-based estimation can struggle to capture non-linear interactions between lifestyle behaviors (such as smoking) and physical indicators (such as Body Mass Index).
+      </p>
+      <p>
+        This project engineered an end-to-end predictive machine learning solution analyzing the <strong>Medical Cost Personal Dataset (US)</strong>. The workflow covers every stage of data science engineering — from initial exploratory distributions to feature encoding, multicollinearity diagnosis via Variance Inflation Factor (VIF), regularization model comparison, and deployment of a production-grade Streamlit web interface on Render.
+      </p>
+      <div class="accent-quote">
+        "By identifying non-linear interactions between smoking status and BMI, the final tuned Lasso Regression model isolates risk drivers while preventing overfit, providing instantaneous and reliable annual expense predictions."
+      </div>
+    </section>
+
+    <!-- Section: Dataset Architecture -->
+    <section id="dataset" class="case-section">
+      <h2>Dataset Architecture & Variables</h2>
+      <p>The model is trained on the US Medical Cost Personal Dataset, comprising individual health records with key socio-demographic and physical predictors:</p>
+      
+      <table class="metrics-table">
+        <thead>
+          <tr>
+            <th>Variable</th>
+            <th>Type</th>
+            <th>Description & Range</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Age</strong></td>
+            <td>Numerical (Integer)</td>
+            <td>Primary policyholder age (18 to 64 years)</td>
+          </tr>
+          <tr>
+            <td><strong>Sex</strong></td>
+            <td>Categorical (Binary)</td>
+            <td>Gender of policyholder (male / female)</td>
+          </tr>
+          <tr>
+            <td><strong>BMI</strong></td>
+            <td>Numerical (Float)</td>
+            <td>Body Mass Index ($kg/m^2$), baseline healthy range 18.5 to 24.9, extending up to 53.1</td>
+          </tr>
+          <tr>
+            <td><strong>Children</strong></td>
+            <td>Numerical (Integer)</td>
+            <td>Number of dependent children covered under insurance (0 to 5)</td>
+          </tr>
+          <tr>
+            <td><strong>Smoker</strong></td>
+            <td>Categorical (Binary)</td>
+            <td>Smoking status of policyholder (yes / no)</td>
+          </tr>
+          <tr>
+            <td><strong>Region</strong></td>
+            <td>Categorical (Nominal)</td>
+            <td>US Geographic region (northeast, northwest, southeast, southwest)</td>
+          </tr>
+          <tr class="highlight-row">
+            <td><strong>Charges (Target)</strong></td>
+            <td>Numerical (Continuous)</td>
+            <td>Annual individual medical costs billed in US Dollars ($USD$)</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Section: EDA & Analytical Insights -->
+    <section id="eda" class="case-section">
+      <h2>Exploratory Data Analysis (EDA) & Key Analytical Insights</h2>
+      <p>
+        As a Data Analyst, inspecting distribution metrics and feature correlations revealed critical statistical patterns governing healthcare expenditure:
+      </p>
+      <ul>
+        <li><strong>Smoking Status is the Primary Cost Driver:</strong> Statistical disaggregation shows smokers experience an average annual medical charge of **$32,050**, compared to **$8,434** for non-smokers — representing a ~380% surcharge driven by elevated medical risk profiles.</li>
+        <li><strong>Interaction Effect between BMI and Smoking:</strong> For non-smokers, an increase in BMI exhibits a slight linear increase in charges. However, for smokers with a $BMI \ge 30$ (obese classification), charges spike exponentially past $40,000 annually.</li>
+        <li><strong>Age Correlation:</strong> Age demonstrates a positive linear trend ($r \approx 0.30$), with baseline annual charges increasing by approximately $250 - $300 for each additional year of age.</li>
+        <li><strong>Regional Distribution:</strong> Southeastern policyholders exhibited slightly higher variance in charges due to higher average BMI values relative to other regions.</li>
+      </ul>
+    </section>
+
+    <!-- Section: 18-Phase ML Workflow -->
+    <section id="workflow" class="case-section">
+      <h2>18-Phase Machine Learning Workflow</h2>
+      <p>The system was built following a 18-phase analytical framework:</p>
+
+      <div class="workflow-grid">
+        <div class="workflow-card">
+          <div class="workflow-phase">Phase 01 — 04</div>
+          <div class="workflow-title">Data Ingestion & Cleaning</div>
+          <div class="workflow-desc">Loaded data, audited null values (0 missing), verified data types, and parsed skewness across numerical columns.</div>
+        </div>
+        <div class="workflow-card">
+          <div class="workflow-phase">Phase 05 — 06</div>
+          <div class="workflow-title">Feature Engineering & Encoding</div>
+          <div class="workflow-desc">Applied One-Hot Encoding via <code>pd.get_dummies()</code> for <code>sex</code>, <code>smoker</code>, and <code>region</code>. Performed 80/20 train-test split.</div>
+        </div>
+        <div class="workflow-card">
+          <div class="workflow-phase">Phase 07 — 09</div>
+          <div class="workflow-title">Baseline Linear Model & VIF</div>
+          <div class="workflow-desc">Fitted Multiple Linear Regression. Computed Variance Inflation Factor (VIF) to confirm absence of multicollinearity.</div>
+        </div>
+        <div class="workflow-card">
+          <div class="workflow-phase">Phase 10 — 13</div>
+          <div class="workflow-title">Regularized Algorithms</div>
+          <div class="workflow-desc">Implemented K-Fold Cross Validation alongside Ridge ($L_2$), Lasso ($L_1$), and ElasticNet hybrid regression algorithms.</div>
+        </div>
+        <div class="workflow-card">
+          <div class="workflow-phase">Phase 14 — 15</div>
+          <div class="workflow-title">GridSearchCV & Benchmarking</div>
+          <div class="workflow-desc">Tuned hyperparameters with 5-fold <code>GridSearchCV</code>. Selected Lasso Regression for optimal $R^2$ and lowest generalization error.</div>
+        </div>
+        <div class="workflow-card">
+          <div class="workflow-phase">Phase 16 — 18</div>
+          <div class="workflow-title">Serialization & Render Cloud</div>
+          <div class="workflow-desc">Saved <code>insurance_lasso_model.pkl</code> and feature columns via <code>joblib</code>. Constructed Streamlit GUI and deployed on Render.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section: Model Performance Benchmarks -->
+    <section id="benchmark" class="case-section">
+      <h2>Model Evaluation & Performance Benchmarking</h2>
+      <p>Models were evaluated across standardized regression metrics including Mean Absolute Error ($MAE$), Root Mean Squared Error ($RMSE$), and $R^2$ Score:</p>
+
+      <table class="metrics-table">
+        <thead>
+          <tr>
+            <th>Model Algorithm</th>
+            <th>MAE ($USD$)</th>
+            <th>RMSE ($USD$)</th>
+            <th>$R^2$ Score</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Multiple Linear Regression</td>
+            <td>$4,183.48</td>
+            <td>$5,796.28</td>
+            <td>0.783</td>
+            <td>Baseline</td>
+          </tr>
+          <tr>
+            <td>Ridge Regression ($L_2$)</td>
+            <td>$4,180.12</td>
+            <td>$5,792.15</td>
+            <td>0.784</td>
+            <td>Evaluated</td>
+          </tr>
+          <tr class="highlight-row">
+            <td><strong>Lasso Regression ($L_1$ Tuned)</strong></td>
+            <td><strong>$4,172.90</strong></td>
+            <td><strong>$5,788.42</strong></td>
+            <td><strong>0.786</strong></td>
+            <td><strong>✅ Selected Final Model</strong></td>
+          </tr>
+          <tr>
+            <td>ElasticNet Regression</td>
+            <td>$4,245.10</td>
+            <td>$5,860.30</td>
+            <td>0.778</td>
+            <td>Evaluated</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>
+        <strong>Model Selection Rationale:</strong> Lasso Regression achieved the optimal balance of minimizing large residual variance while performing implicit feature selection, shrinking redundant coefficient parameters effectively.
+      </p>
+    </section>
+
+    <!-- Section: Streamlit & Render Deployment -->
+    <section id="deployment" class="case-section">
+      <h2>Streamlit Web Application & Render Cloud Deployment</h2>
+      <p>
+        To make the machine learning model accessible to non-technical stakeholders and insurance underwriters, an interactive web UI was engineered using <strong>Streamlit</strong>:
+      </p>
+      <ul>
+        <li><strong>Dynamic Input Forms:</strong> Allows users to set Age, Sex, BMI, Children count, Smoker status, and Region with instant feedback.</li>
+        <li><strong>Real-time Inference Engine:</strong> Converts user inputs into encoded feature arrays identical to the training schema before running inference against the serialized <code>.pkl</code> model artifact.</li>
+        <li><strong>Cloud Deployment on Render:</strong> Configured <code>requirements.txt</code> and container settings for continuous deployment directly from the GitHub codebase repository.</li>
+      </ul>
+      
+      <div class="accent-quote">
+        🌐 <strong>Live App Link:</strong> <a href="https://medical-insurance-cost-prediction-t798.onrender.com/" target="_blank" style="color: var(--black); text-decoration: underline;">https://medical-insurance-cost-prediction-t798.onrender.com/</a>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<!-- ─── FOOTER ────────────────────────────────────────────── -->
+<footer>
+  <span class="footer-copy">© 2026 Rahul Simhadri</span>
+  <span class="footer-copy">VIT Vellore · Information Technology & AI/ML</span>
+</footer>
+
+</body>
+</html>
