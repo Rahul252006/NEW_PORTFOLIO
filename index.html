@@ -800,139 +800,7 @@
             padding-bottom: 5rem;
         }
 
-        .gdg-badge-minimal {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.35rem 0.85rem;
-            background: #ffffff;
-            border: 1px solid var(--gray-200);
-            border-radius: 100px;
-            font-family: var(--font-body);
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--gray-800);
-            text-transform: none;
-            letter-spacing: normal;
-            vertical-align: middle;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
-            transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
-        }
 
-        .gdg-badge-minimal:hover {
-            border-color: #4285f4;
-            box-shadow: 0 3px 10px rgba(66, 133, 244, 0.12);
-            transform: translateY(-1px);
-        }
-
-        .gdg-logo-svg {
-            width: 17px;
-            height: 17px;
-            flex-shrink: 0;
-            display: inline-block;
-            vertical-align: middle;
-        }
-
-        /* ─── FULL-WIDTH GDG BANNER ───────────────────────────────── */
-        .gdg-fullwidth-banner {
-            width: 100%;
-            max-width: 1400px;
-            margin: 3.5rem auto;
-            padding: 2.2rem 3rem;
-            background: #ffffff;
-            border: 1px solid var(--gray-200);
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 2rem;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-            transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
-        }
-
-        .gdg-fullwidth-banner:hover {
-            border-color: #4285f4;
-            box-shadow: 0 8px 28px rgba(66, 133, 244, 0.08);
-            transform: translateY(-2px);
-        }
-
-        .gdg-banner-left {
-            display: flex;
-            align-items: center;
-            gap: 1.8rem;
-        }
-
-        .gdg-big-logo {
-            width: 58px;
-            height: 58px;
-            flex-shrink: 0;
-        }
-
-        .gdg-banner-info {
-            display: flex;
-            flex-direction: column;
-            gap: 0.3rem;
-        }
-
-        .gdg-banner-label {
-            font-family: var(--font-label);
-            font-size: 0.75rem;
-            font-weight: 700;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: #4285f4;
-        }
-
-        .gdg-banner-title {
-            font-family: var(--font-display);
-            font-size: 1.45rem;
-            font-weight: 800;
-            color: var(--black);
-            letter-spacing: -0.02em;
-        }
-
-        .gdg-banner-desc {
-            font-family: var(--font-body);
-            font-size: 0.95rem;
-            color: var(--gray-600);
-            line-height: 1.5;
-            max-width: 750px;
-        }
-
-        .gdg-banner-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1.1rem;
-            background: #ffffff;
-            border: 1px solid var(--gray-200);
-            border-radius: 100px;
-            font-family: var(--font-body);
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--gray-800);
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
-            flex-shrink: 0;
-        }
-
-        @media (max-width: 768px) {
-            .gdg-fullwidth-banner {
-                flex-direction: column;
-                align-items: flex-start;
-                padding: 1.8rem;
-                gap: 1.2rem;
-                margin: 2.5rem auto;
-            }
-            .gdg-banner-left {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-            }
-            .gdg-big-logo {
-                width: 48px;
-                height: 48px;
-            }
-        }
 
         .comp-grid {
             display: grid;
@@ -1707,17 +1575,7 @@
     <section class="hero" id="home">
         <div class="hero-top-row">
             <div class="hero-content">
-                <div class="hero-eyebrow" style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
-                    <span>Data Science enthusiast</span>
-                    <span class="gdg-badge-minimal">
-                        <svg class="gdg-logo-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M6.8 17.5L1.5 12.2L6.8 6.9L8.2 8.3L4.3 12.2L8.2 16.1L6.8 17.5Z" fill="#EA4335"/>
-                            <path d="M14.1 4.5L11.5 19.5H9.4L12 4.5H14.1Z" fill="#FBBC05"/>
-                            <path d="M17.2 17.5L15.8 16.1L19.7 12.2L15.8 8.3L17.2 6.9L22.5 12.2L17.2 17.5Z" fill="#4285F4"/>
-                        </svg>
-                        Google Developer Groups Member
-                    </span>
-                </div>
+                <div class="hero-eyebrow">Data Science enthusiast</div>
                 <h1 class="hero-name">
                     <span>Rahul</span> <span>Simhadri</span>
                 </h1>
@@ -1953,30 +1811,6 @@
         </div>
     </section>
 
-    <!-- ─── GDG COMMUNITY BANNER ────────────────────────────── -->
-    <div class="gdg-fullwidth-banner reveal">
-        <div class="gdg-banner-left">
-            <svg class="gdg-big-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M14 34L3.5 23.5L14 13L16.8 15.8L9.1 23.5L16.8 31.2L14 34Z" fill="#EA4335"/>
-                <path d="M28.2 9L23 39H18.8L24 9H28.2Z" fill="#FBBC05"/>
-                <path d="M34 34L31.2 31.2L38.9 23.5L31.2 15.8L34 13L44.5 23.5L34 34Z" fill="#4285F4"/>
-            </svg>
-            <div class="gdg-banner-info">
-                <div class="gdg-banner-label">Google Developer Groups</div>
-                <h3 class="gdg-banner-title">Google Developer Groups Member</h3>
-                <p class="gdg-banner-desc">Engaging in developer ecosystems, hackathons, and collaborative tech initiatives across Google Developer Groups.</p>
-            </div>
-        </div>
-        <div class="gdg-banner-badge">
-            <svg class="gdg-logo-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M6.8 17.5L1.5 12.2L6.8 6.9L8.2 8.3L4.3 12.2L8.2 16.1L6.8 17.5Z" fill="#EA4335"/>
-                <path d="M14.1 4.5L11.5 19.5H9.4L12 4.5H14.1Z" fill="#FBBC05"/>
-                <path d="M17.2 17.5L15.8 16.1L19.7 12.2L15.8 8.3L17.2 6.9L22.5 12.2L17.2 17.5Z" fill="#4285F4"/>
-            </svg>
-            <span>GDG Community</span>
-        </div>
-    </div>
-
     <!-- ─── COMPETITIONS ──────────────────────────────────────── -->
     <section id="competitions">
         <div class="section-label">Competitions</div>
@@ -2013,9 +1847,9 @@
                 <a href="https://unstop.com/certificate-preview/9d3c58d0-61a9-41ae-9af9-38a8fc128b13" target="_blank" class="proj-link" style="margin-top: 1.2rem; display: inline-block; width: fit-content;">View Certificate &rarr;</a>
             </div>
             <div class="comp-card reveal reveal-delay-3">
-                <div class="comp-org">GDG Coimbatore</div>
+                <div class="comp-org">Google Developers</div>
                 <h3 class="comp-title">Tech For Good 2026 — Build With Agents</h3>
-                <p class="comp-desc">Participated in building agentic AI applications designed for social impact during GDG Coimbatore's Tech For Good hackathon 2026.</p>
+                <p class="comp-desc">Participated in building agentic AI applications designed for social impact during the Tech For Good hackathon 2026.</p>
             </div>
         </div>
     </section>
