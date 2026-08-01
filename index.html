@@ -800,40 +800,37 @@
             padding-bottom: 5rem;
         }
 
-        .gdg-highlight-badge {
+        .gdg-badge-minimal {
             display: inline-flex;
             align-items: center;
-            gap: 0.45rem;
-            padding: 0.35rem 0.8rem;
-            background: linear-gradient(135deg, rgba(66, 133, 244, 0.12) 0%, rgba(54, 179, 126, 0.12) 100%);
-            border: 1px solid rgba(66, 133, 244, 0.35);
-            border-radius: 20px;
-            font-family: var(--font-label);
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: #1a73e8;
-            letter-spacing: 0.03em;
+            gap: 0.5rem;
+            padding: 0.35rem 0.85rem;
+            background: #ffffff;
+            border: 1px solid var(--gray-200);
+            border-radius: 100px;
+            font-family: var(--font-body);
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--gray-800);
             text-transform: none;
-            margin-left: 1rem;
+            letter-spacing: normal;
             vertical-align: middle;
-            box-shadow: 0 2px 8px rgba(66, 133, 244, 0.15);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
         }
 
-        .gdg-dot {
-            width: 7px;
-            height: 7px;
-            background-color: #ea4335;
-            border-radius: 50%;
+        .gdg-badge-minimal:hover {
+            border-color: #4285f4;
+            box-shadow: 0 3px 10px rgba(66, 133, 244, 0.12);
+            transform: translateY(-1px);
+        }
+
+        .gdg-logo-svg {
+            width: 17px;
+            height: 17px;
+            flex-shrink: 0;
             display: inline-block;
-            box-shadow: 0 0 6px #ea4335;
-            animation: gdg-pulse 1.5s infinite alternate;
-        }
-
-        @keyframes gdg-pulse {
-            0% { background-color: #ea4335; box-shadow: 0 0 4px #ea4335; }
-            33% { background-color: #4285f4; box-shadow: 0 0 4px #4285f4; }
-            66% { background-color: #fbbc05; box-shadow: 0 0 4px #fbbc05; }
-            100% { background-color: #34a853; box-shadow: 0 0 4px #34a853; }
+            vertical-align: middle;
         }
 
         .comp-grid {
@@ -1609,7 +1606,17 @@
     <section class="hero" id="home">
         <div class="hero-top-row">
             <div class="hero-content">
-                <div class="hero-eyebrow">Artificial Intelligence enthusiast</div>
+                <div class="hero-eyebrow" style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+                    <span>Artificial Intelligence enthusiast</span>
+                    <span class="gdg-badge-minimal">
+                        <svg class="gdg-logo-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M6.8 17.5L1.5 12.2L6.8 6.9L8.2 8.3L4.3 12.2L8.2 16.1L6.8 17.5Z" fill="#EA4335"/>
+                            <path d="M14.1 4.5L11.5 19.5H9.4L12 4.5H14.1Z" fill="#FBBC05"/>
+                            <path d="M17.2 17.5L15.8 16.1L19.7 12.2L15.8 8.3L17.2 6.9L22.5 12.2L17.2 17.5Z" fill="#4285F4"/>
+                        </svg>
+                        Google Developer Groups Member
+                    </span>
+                </div>
                 <h1 class="hero-name">
                     <span>Rahul</span> <span>Simhadri</span>
                 </h1>
@@ -1744,7 +1751,7 @@
                     <div class="stat-desc">Production Projects</div>
                 </div>
                 <div class="stat-item reveal reveal-delay-3">
-                    <div class="stat-num">7+</div>
+                    <div class="stat-num">3+</div>
                     <div class="stat-desc">Certifications</div>
                 </div>
             </div>
@@ -1847,10 +1854,7 @@
 
     <!-- ─── COMPETITIONS ──────────────────────────────────────── -->
     <section id="competitions">
-        <div class="section-label">
-            Competitions
-            <span class="gdg-highlight-badge"><span class="gdg-dot"></span> Member in GDG Chapter Chennai</span>
-        </div>
+        <div class="section-label">Competitions</div>
         <h2 class="section-title">Challenges<br>& Hackathons</h2>
 
         <div class="comp-grid">
