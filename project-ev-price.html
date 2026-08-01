@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Electric Vehicle Price Prediction — Machine Learning Case Study</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&family=Fira+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+<style>
+/* ─── RESET ─────────────────────────────────────────────── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* ─── PAGE LOADER ────────────────────────────────────────── */
+.page-loader {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: #ffffff;
+  z-index: 99999;
+  display: flex; justify-content: center; align-items: center;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+.page-loader.fade-out {
+  opacity: 0; visibility: hidden; pointer-events: none;
+}
+.loader-spinner {
+  width: 36px; height: 36px;
+  border: 3px solid rgba(236, 72, 153, 0.1);
+  border-top: 3px solid #ec4899;
+  border-right: 3px solid #8b5cf6;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+html { scroll-behavior: smooth; }
+
+:root {
+  --white: #ffffff;
+  --black: #000000;
+  --gray-100: #f5f5f5;
+  --gray-200: #e8e8e8;
+  --gray-400: #999999;
+  --gray-600: #555555;
+  --gray-800: #222222;
+  --font-display: 'Manrope', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-label: 'Fira Sans', sans-serif;
+}
+
+body {
+  background: var(--white);
+  color: var(--black);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  padding-top: 4.2rem;
+}
+
+/* ─── NAV ─────────────────────────────────────────────────── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 4rem;
+  background: rgba(255,255,255,0.65);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border-bottom: 1px solid var(--gray-200);
+}
+.nav-logo {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.1rem;
+  letter-spacing: -0.02em;
+  color: var(--black);
+  text-decoration: none;
+}
+.nav-links {
+  display: flex;
+  gap: 2.5rem;
+  list-style: none;
+}
+.nav-links a {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--gray-600);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--black); }
+
+/* ─── CASE STUDY HEADER ───────────────────────────────────── */
+.case-header {
+  padding: 2rem 4rem 4rem;
+  border-bottom: 1px solid var(--gray-200);
+}
+.back-link {
+  font-family: var(--font-label);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--black);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  transition: opacity 0.2s;
+}
+.back-link:hover { opacity: 0.5; }
+.case-num {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gray-400);
+  margin-bottom: 1rem;
+}
+.case-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+  color: var(--black);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.ai-badge-glowing {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.25rem 0.75rem;
+  background: linear-gradient(135deg, #b30059 0%, #3b00c6 100%);
+  border-radius: 5px;
+  vertical-align: middle;
+  margin-left: 0.5rem;
+  margin-right: 0.2rem;
+  box-shadow: 0 0 14px rgba(236, 72, 153, 0.45), 0 0 24px rgba(139, 92, 246, 0.3);
+  animation: ai-glow 2s infinite alternate;
+}
+.ai-badge-text {
+  font-family: var(--font-label);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+.ai-badge-dot {
+  width: 8px; height: 8px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #ffffff;
+  animation: ai-dot-pulse 1s infinite alternate;
+}
+@keyframes ai-glow {
+  0% { box-shadow: 0 0 10px rgba(236, 72, 153, 0.4), 0 0 20px rgba(139, 92, 246, 0.35); }
+  100% { box-shadow: 0 0 22px rgba(236, 72, 153, 0.7), 0 0 34px rgba(139, 92, 246, 0.6); }
+}
+@keyframes ai-dot-pulse {
+  0% { transform: scale(0.85); opacity: 0.7; }
+  100% { transform: scale(1.35); opacity: 1; }
+}
+.case-subtitle {
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  font-weight: 300;
+  color: var(--gray-600);
+  max-width: 900px;
+  line-height: 1.8;
+}
+.case-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  margin-top: 3rem;
+  border-top: 1px solid var(--gray-200);
+  padding-top: 2rem;
+}
+.meta-item-title {
+  font-family: var(--font-label);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gray-400);
+  margin-bottom: 0.5rem;
+}
+.meta-item-val {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--black);
+  font-weight: 500;
+}
+
+/* ─── CASE STUDY CONTENT ──────────────────────────────────── */
+.case-content {
+  padding: 5rem 4rem;
+  display: grid;
+  grid-template-columns: 1fr 2.8fr;
+  gap: 5rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+.content-left {
+  position: sticky;
+  top: 8rem;
+  height: fit-content;
+}
+.content-nav-title {
+  font-family: var(--font-label);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gray-400);
+  margin-bottom: 1.5rem;
+}
+.content-nav-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.content-nav-list a {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--gray-600);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.content-nav-list a:hover { color: var(--black); }
+
+.content-right {
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+}
+.case-section { scroll-margin-top: 8rem; }
+.case-section h2 {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--black);
+  letter-spacing: -0.02em;
+  margin-bottom: 1.5rem;
+}
+.case-section p {
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  font-weight: 300;
+  color: var(--gray-600);
+  line-height: 1.85;
+  margin-bottom: 1.5rem;
+}
+.case-section ul {
+  list-style: none;
+  margin-bottom: 1.5rem;
+}
+.case-section li {
+  font-family: var(--font-body);
+  font-size: 0.98rem;
+  font-weight: 300;
+  color: var(--gray-600);
+  line-height: 1.7;
+  padding-left: 1.5rem;
+  position: relative;
+  margin-bottom: 0.8rem;
+}
+.case-section li::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: var(--black);
+}
+.accent-quote {
+  border-left: 3px solid var(--black);
+  padding: 1rem 0 1rem 2rem;
+  margin: 2rem 0;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-style: italic;
+  font-weight: 500;
+  color: var(--black);
+  line-height: 1.5;
+  background: var(--gray-100);
+}
+
+.metrics-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2rem 0;
+  font-family: var(--font-body);
+}
+.metrics-table th, .metrics-table td {
+  padding: 0.9rem 1.2rem;
+  text-align: left;
+  border-bottom: 1px solid var(--gray-200);
+}
+.metrics-table th {
+  font-family: var(--font-label);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: var(--gray-100);
+  color: var(--black);
+  font-weight: 700;
+}
+.metrics-table td {
+  font-size: 0.92rem;
+  color: var(--gray-600);
+}
+.metrics-table tr.highlight-row {
+  background: rgba(234, 67, 53, 0.05);
+  font-weight: 600;
+}
+.metrics-table tr.highlight-row td {
+  color: var(--black);
+}
+
+.workflow-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.2rem;
+  margin: 2rem 0;
+}
+.workflow-card {
+  border: 1px solid var(--gray-200);
+  padding: 1.5rem;
+  background: var(--white);
+}
+.workflow-phase {
+  font-family: var(--font-label);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--gray-400);
+  margin-bottom: 0.4rem;
+}
+.workflow-title {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--black);
+  margin-bottom: 0.6rem;
+}
+.workflow-desc {
+  font-size: 0.88rem;
+  color: var(--gray-600);
+  line-height: 1.6;
+}
+
+footer {
+  background: var(--black);
+  border-top: 1px solid #111;
+  padding: 1.5rem 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.footer-copy {
+  font-family: var(--font-label);
+  font-size: 0.72rem;
+  color: #888;
+  letter-spacing: 0.06em;
+}
+
+@media (max-width: 968px) {
+  .case-content { grid-template-columns: 1fr; gap: 3rem; }
+  .content-left { display: none; }
+}
+@media (max-width: 768px) {
+  nav { padding: 1rem 1.5rem; }
+  .nav-links { display: none; }
+  .case-header, .case-content, footer { padding-left: 1.5rem; padding-right: 1.5rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- Page Loader -->
+<div class="page-loader" id="page-loader">
+  <div class="loader-spinner"></div>
+</div>
+<script>
+  (function () {
+    function hideLoader() {
+      const loader = document.getElementById('page-loader');
+      if (loader && !loader.classList.contains('fade-out')) {
+        loader.classList.add('fade-out');
+        setTimeout(() => loader.remove(), 300);
+      }
+    }
+    document.addEventListener('DOMContentLoaded', hideLoader);
+    setTimeout(hideLoader, 800);
+    window.addEventListener('load', hideLoader);
+  })();
+</script>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">RS.</a>
+  <ul class="nav-links">
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#experience">Work</a></li>
+    <li><a href="index.html#projects">Projects</a></li>
+    <li><a href="certifications.html">Certs</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- CASE STUDY HEADER -->
+<header class="case-header">
+  <a href="index.html#projects" class="back-link">&larr; Back to Projects</a>
+  <div class="case-num">Case Study 04 — Supervised Machine Learning</div>
+  <h1 class="case-title">Electric Vehicle Price Prediction <span class="ai-badge-glowing"><span class="ai-badge-dot"></span><span class="ai-badge-text">ML PROJECT</span></span></h1>
+  <p class="case-subtitle">A supervised machine learning regression project predicting market prices of electric vehicles using technical specifications. Built with specification unit parsing, median/mode missing value imputation, standard scaling, and model benchmarking across Linear Regression, Decision Tree, and Random Forest ($R^2 = 0.9126$).</p>
+
+  <div class="case-meta-grid">
+    <div class="meta-item">
+      <div class="meta-item-title">Role</div>
+      <div class="meta-item-val">Data Analyst & ML Developer</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-item-title">Technologies</div>
+      <div class="meta-item-val">Python, Pandas, NumPy, Scikit-learn, Random Forest, Seaborn, Matplotlib, Joblib</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-item-title">Top Model</div>
+      <div class="meta-item-val">Random Forest Regressor ($R^2 = 0.9126$, 5-Fold CV $R^2 = 0.7154$)</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-item-title">Links</div>
+      <div class="meta-item-val">
+        <a href="https://github.com/Rahul252006/EV-Price-Prediction" target="_blank" style="color: var(--black); text-decoration: underline; font-weight: 700;">GitHub Repository ↗</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- CASE STUDY CONTENT -->
+<main class="case-content">
+  <aside class="content-left">
+    <div class="content-nav-title">Project Outline</div>
+    <ul class="content-nav-list">
+      <li><a href="#overview">Overview & Business Scope</a></li>
+      <li><a href="#dataset">EV Dataset & Cleaning</a></li>
+      <li><a href="#engineering">Feature Engineering & Units</a></li>
+      <li><a href="#models">Regression Benchmarks</a></li>
+      <li><a href="#findings">Key Insights & Feature Drivers</a></li>
+      <li><a href="#future">Future Enhancements</a></li>
+    </ul>
+  </aside>
+
+  <div class="content-right">
+
+    <!-- Section 1: Overview & Business Scope -->
+    <section id="overview" class="case-section">
+      <h2>Overview & Business Scope</h2>
+      <p>
+        As the adoption of electric vehicles (EVs) accelerates globally, estimating vehicle market value based on performance and battery specifications has become critical for automotive manufacturers, dealerships, and buyers.
+      </p>
+      <p>
+        Electric vehicle pricing is driven by key engineering specifications:
+      </p>
+      <ul>
+        <li><strong>Powertrain Performance:</strong> Battery Capacity (kWh), Top Speed (km/h), 0–100 Acceleration (sec)</li>
+        <li><strong>Efficiency & Range:</strong> Driving Range (km), Efficiency (Wh/km), Fast Charging Speed (km/h)</li>
+        <li><strong>Utility & Configuration:</strong> Seating Capacity, Drive Configuration (AWD/RWD/FWD), Towing Capacity</li>
+      </ul>
+      <div class="accent-quote">
+        "Supervised regression modeling translates non-linear battery and performance specifications into reliable market price estimates, empowering data-driven pricing strategies."
+      </div>
+    </section>
+
+    <!-- Section 2: EV Dataset & Cleaning -->
+    <section id="dataset" class="case-section">
+      <h2>EV Database Dataset Architecture</h2>
+      <p>
+        Data was sourced from the EV Database containing technical parameters across leading global electric vehicle models:
+      </p>
+
+      <table class="metrics-table">
+        <thead>
+          <tr>
+            <th>Dimension / Stage</th>
+            <th>Original Dataset</th>
+            <th>Cleaned Dataset</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Vehicle Samples</strong></td>
+            <td>353 electric vehicles</td>
+            <td><strong>309 clean vehicles</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Feature Count</strong></td>
+            <td>17 original attributes</td>
+            <td><strong>11 final features</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Target Variable</strong></td>
+            <td>Raw Text Price (€)</td>
+            <td><strong>Numeric Germany Price (€)</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Section 3: Feature Engineering & Spec Parsing -->
+    <section id="engineering" class="case-section">
+      <h2>Feature Engineering & String Conversion</h2>
+      <p>
+        Raw specification data contained embedded measurement units that required systematic regex parsing and numeric transformation:
+      </p>
+
+      <div class="workflow-grid">
+        <div class="workflow-card">
+          <div class="workflow-phase">Text Parsing 01</div>
+          <div class="workflow-title">Acceleration Conversion</div>
+          <div class="workflow-desc">Converted raw strings like <code>"6.5 sec"</code> to numeric float <code>6.5</code>.</div>
+        </div>
+        <div class="workflow-card">
+          <div class="workflow-phase">Text Parsing 02</div>
+          <div class="workflow-title">Range & Speed Extraction</div>
+          <div class="workflow-desc">Extracted integer values from <code>"450 km"</code> &rarr; <code>450</code> and <code>"170 km/h"</code> &rarr; <code>170</code>.</div>
+        </div>
+        <div class="workflow-card">
+          <div class="workflow-phase">Text Parsing 03</div>
+          <div class="workflow-title">Efficiency & Currency</div>
+          <div class="workflow-desc">Parsed <code>"180 Wh/km"</code> &rarr; <code>180</code> and cleaned price formatting <code>"€45,990"</code> &rarr; <code>45990</code>.</div>
+        </div>
+        <div class="workflow-card">
+          <div class="workflow-phase">Preprocessing</div>
+          <div class="workflow-title">Imputation & Scaling</div>
+          <div class="workflow-desc">Applied median imputation for numerical gaps, mode imputation for categorical specs, Label Encoding, and StandardScaler.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4: Regression Benchmarks & Cross-Validation -->
+    <section id="models" class="case-section">
+      <h2>Model Evaluation & Regression Benchmarks</h2>
+      <p>
+        Evaluated linear and non-linear regression architectures on train-test splits and 5-fold cross-validation:
+      </p>
+
+      <table class="metrics-table">
+        <thead>
+          <tr>
+            <th>Model Algorithm</th>
+            <th>Architecture Type</th>
+            <th>$R^2$ Score</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Linear Regression</strong></td>
+            <td>Parametric Baseline</td>
+            <td>0.7002</td>
+            <td>Baseline</td>
+          </tr>
+          <tr>
+            <td><strong>Decision Tree Regressor</strong></td>
+            <td>Single Tree Splitting</td>
+            <td>0.8904</td>
+            <td>Evaluated</td>
+          </tr>
+          <tr class="highlight-row">
+            <td><strong>Random Forest Regressor</strong></td>
+            <td>Ensemble Bagging Regressor</td>
+            <td><strong>0.9126</strong></td>
+            <td><strong>✅ Best Performing Model</strong></td>
+          </tr>
+          <tr>
+            <td><strong>5-Fold Cross Validation</strong></td>
+            <td>Generalization Audit (RF)</td>
+            <td><strong>0.7154</strong> (Avg $R^2$)</td>
+            <td>Cross-Validated</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Section 5: Key Insights -->
+    <section id="findings" class="case-section">
+      <h2>Key Findings & Feature Importance</h2>
+      <p>
+        Feature importance analysis from the Random Forest model revealed the strongest determinants of electric vehicle valuation:
+      </p>
+      <ul>
+        <li><strong>Battery Capacity & Driving Range:</strong> Top primary drivers of vehicle price due to direct battery pack component costs.</li>
+        <li><strong>Fast Charging Speed & Efficiency:</strong> High fast-charging rates and lower Wh/km consumption correlated strongly with premium pricing tiers.</li>
+        <li><strong>Acceleration & Top Speed:</strong> Dual-motor performance configurations created noticeable price premiums.</li>
+      </ul>
+    </section>
+
+    <!-- Section 6: Future Roadmap -->
+    <section id="future" class="case-section">
+      <h2>Future Enhancements</h2>
+      <p>
+        Future iterations of this EV pricing intelligence system will focus on scalability and production integration:
+      </p>
+      <div class="accent-quote">
+        🚀 <strong>Enhancement Roadmap:</strong> Implementation of XGBoost, LightGBM, and CatBoost regressoes, hyperparameter tuning, SHAP explainability visualizations, and continuous API deployment for real-time market price estimation.
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-copy">© 2026 Rahul Simhadri</span>
+  <span class="footer-copy">VIT Vellore · Information Technology & AI/ML</span>
+</footer>
+
+</body>
+</html>
